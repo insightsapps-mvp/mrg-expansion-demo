@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Paleta derivada de mercosurretailgroup.com: navy #071A2E / #0B3154, azul #2D9CDB / #1769AA */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #f4f6f9;
+  --card: #ffffff;
+  --border: #e3e7ee;
+  --border-strong: #cfd6e0;
+  --text: #071a2e;
+  --text-2: #4a5768;
+  --muted: #6b7686;
+  --accent: #1769aa;
+  --accent-strong: #0b3154;
+  --accent-soft: #e2eef9;
+  --brand: #0b2545;
+  --brand-fg: #ffffff;
+  --hero: #071a2e;
+  --hero-accent: #2d9cdb;
+  --ok: #0a7d4f;
+  --warn: #b45309;
+  --danger: #c9372c;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 28px rgba(0, 0, 0, 0.08);
+  --chart-grid: #e3e7ee;
+  --chart-2: #a1aab6;
+  /* Barras fijas inferiores: la bottom-nav y las barras de acción de cada vista registran su alto */
+  --bottom-nav-h: 0px;
+  --view-bar-h: 0px;
+  --fixed-bottom-stack: calc(var(--bottom-nav-h) + var(--view-bar-h));
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #070d16;
+  --bg-subtle: #0e1622;
+  --card: #0e1622;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text: #f1f4f8;
+  --text-2: #a7b1be;
+  --muted: #7f8a99;
+  --accent: #5cb8ee;
+  --accent-strong: #9ad2f5;
+  --accent-soft: rgba(92, 184, 238, 0.14);
+  --brand: #f1f4f8;
+  --brand-fg: #071a2e;
+  --hero: #050f1c;
+  --ok: #34c38f;
+  --warn: #f0a63a;
+  --danger: #f06b5f;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 28px rgba(0, 0, 0, 0.45);
+  --chart-grid: rgba(255, 255, 255, 0.1);
+  --chart-2: #5b6573;
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+body {
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+#root {
+  min-height: 100dvh;
+}
+
+.mono,
+.font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.num {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+@layer components {
+  .card {
+    @apply rounded-card border border-line bg-card shadow-sm;
+  }
+  .btn {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-brand-fg hover:opacity-90;
+  }
+  .btn-secondary {
+    @apply btn border border-line-strong bg-card text-ink hover:bg-subtle;
+  }
+  .btn-ghost {
+    @apply btn text-ink2 hover:bg-subtle hover:text-ink;
+  }
+  .btn-sm {
+    @apply min-h-[36px] px-3.5 text-[13px];
+  }
+  .input {
+    @apply min-h-[44px] w-full rounded-ctl border border-line-strong bg-card px-3 text-sm text-ink outline-none transition placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/25;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium text-ink2;
+  }
+  .kpi-label {
+    @apply text-[10.5px] font-semibold uppercase tracking-[0.12em] text-muted;
+  }
+  .kpi-value {
+    @apply num leading-none text-ink;
+    font-size: clamp(26px, 5vw, 34px);
+    font-weight: 700;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold;
+  }
+  .section-title {
+    @apply text-lg font-semibold tracking-tight text-ink;
+  }
+  .icon-btn {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-full text-ink2 transition hover:bg-subtle hover:text-ink;
+  }
+}
+
+/* Halo del botón "Volver a la propuesta" */
+@keyframes halo {
+  0% {
+    scale: 1;
+    opacity: 0.55;
+  }
+  100% {
+    scale: 1.28;
+    opacity: 0;
+  }
+}
+.halo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  animation: halo 1.9s ease-out infinite;
+  z-index: -1;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.fade-up {
+  animation: fadeUp 0.35s ease both;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    scale: 0.95;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+.modal-in {
+  animation: modalIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes sheetIn {
+  from {
+    translate: 0 100%;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+.sheet-in {
+  animation: sheetIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes panelIn {
+  from {
+    translate: 100% 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+.panel-in {
+  animation: panelIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes stagger {
+  from {
+    opacity: 0;
+    translate: -8px 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Contenido del editor de propuestas */
+.doc-a4 {
+  font-family: Inter, system-ui, sans-serif;
+}
+
+@media print {
+  .no-print,
+  nav,
+  header,
+  footer,
+  [data-no-print] {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+}
+.print-only {
+  display: none;
+}
