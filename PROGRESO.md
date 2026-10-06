@@ -12,8 +12,11 @@
 - i18n completo: `npm run check:i18n` → 0 faltantes.
 - QA: sin scroll horizontal a 390px en todas las rutas; modales centrados.
 
+- QA funcional: Modo Trailer (11 escenas en loop, generación IA y vista semanal disparadas solas) y Asistente MRG (respuestas con datos del mock; no revela el monto).
+- Screenshots en /screenshots: 12 desktop (1440) + 12 mobile (390).
+
 ## Pendiente
-- Screenshots en /screenshots.
+- Nada del alcance. Reemplazar las reglas de scoring cuando Daniel envíe las variables definitivas.
 
 ## Decisiones
 - Branding: logo y colores reales de MRG (navy #071A2E / #13294B, azul #1769AA / #2D9CDB) en lugar del azul genérico del brief.

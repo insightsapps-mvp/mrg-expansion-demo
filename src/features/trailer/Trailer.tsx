@@ -232,7 +232,7 @@ export function Trailer() {
           </div>
         </div>
       )}
-      <button onClick={exit} className="fixed right-5 top-5 z-[9994] inline-flex min-h-[44px] items-center gap-2 rounded-full border border-white/25 bg-[rgba(7,26,46,.75)] px-4 text-sm font-medium text-white backdrop-blur-md hover:bg-[rgba(7,26,46,.9)]">
+      <button onClick={exit} className="fixed right-5 top-[80px] z-[9994] inline-flex min-h-[44px] items-center gap-2 rounded-full border border-white/25 bg-[rgba(7,26,46,.75)] px-4 text-sm font-medium text-white backdrop-blur-md hover:bg-[rgba(7,26,46,.9)]">
         <X size={16} />
         {t('tr.exit')} <span className="text-white/50">Esc</span>
       </button>
