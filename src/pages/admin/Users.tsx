@@ -7,7 +7,8 @@ import { cn } from '@/lib/utils';
 import { Avatar, DevNotice, Empty, Modal, PageHeader, PreviewBanner, Segmented } from '@/components/ui';
 import { roleColor, users as seedUsers } from '@/data/users';
 import { brands } from '@/data/brands';
-import type { Role, User } from '@/types';
+import type { AccessRequest, Role, User } from '@/types';
+import { AccessRequests } from './_components/AccessRequests';
 
 type Row = User & { pending?: boolean; inactive?: boolean };
 type Filter = 'all' | Role;
@@ -98,6 +99,22 @@ export default function UsersPage() {
     s.toast(tr('users.invitedToast', s.lang, { name: row.name, email: row.email }));
   };
 
+  const addApproved = (r: AccessRequest) => {
+    const row: Row = {
+      id: `u-req-${r.id}`,
+      name: r.name,
+      email: r.email,
+      role: r.kind,
+      brandId: r.brandId,
+      title: r.kind === 'franquiciante' ? [r.company ?? '', r.company ?? ''] : [en('role', r.kind, 'es'), en('role', r.kind, 'en')],
+      lastAccess: [tr('users.never', 'es'), tr('users.never', 'en')],
+      initials: initials(r.name),
+      pending: true,
+    };
+    setList((l) => [row, ...l]);
+    setFilter('all');
+  };
+
   const changeRole = (u: Row, r: Role) => {
     setList((l) => l.map((x) => (x.id === u.id ? { ...x, role: r } : x)));
     const s = useApp.getState();
@@ -181,6 +198,7 @@ export default function UsersPage() {
         }
       />
       <PreviewBanner bullets={[t('users.b1'), t('users.b2'), t('users.b3')]} />
+      <AccessRequests onApproved={addApproved} />
 
       <div className="mb-4 min-w-0">
         <Segmented<Filter>

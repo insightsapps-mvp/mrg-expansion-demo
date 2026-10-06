@@ -15,6 +15,9 @@
 - QA funcional: Modo Trailer (11 escenas en loop, generación IA y vista semanal disparadas solas) y Asistente MRG (respuestas con datos del mock; no revela el monto).
 - Screenshots en /screenshots: 12 desktop (1440) + 12 mobile (390).
 
+- Calendario compartido para Franquiciante y Franquiciado: proponen actividades, MRG las confirma (o propone otra fecha) y aparecen en el calendario de cada participante. Badge de pendientes en el menú del Admin.
+- Registro desde el login (/registro): marcas y futuros franquiciados cargan sus datos; el Admin aprueba o rechaza en Usuarios. Un franquiciado aprobado entra al CRM como lead con score calculado.
+
 ## Pendiente
 - Nada del alcance. Reemplazar las reglas de scoring cuando Daniel envíe las variables definitivas.
 

@@ -24,6 +24,9 @@ import Opening from '@/pages/franquiciado/Opening';
 import Documents from '@/pages/franquiciado/Documents';
 import MonthlyReportPage from '@/pages/franquiciado/MonthlyReport';
 import MessagesPage from '@/pages/franquiciado/Messages';
+import FranchisorCalendar from '@/pages/franquiciante/Calendar';
+import FranchiseeCalendar from '@/pages/franquiciado/Calendar';
+import Register from '@/pages/Register';
 import Projects from '@/pages/equipo/Projects';
 import Board from '@/pages/equipo/Board';
 import MyTasks from '@/pages/equipo/MyTasks';
@@ -35,6 +38,7 @@ export default function App() {
     <>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/registro" element={<Register />} />
         <Route element={<AppShell />}>
           <Route path="/propuesta" element={<Propuesta />} />
           <Route path="/admin/panel" element={<AdminPanel />} />
@@ -52,11 +56,13 @@ export default function App() {
           <Route path="/franquiciante/unidades/:id" element={<UnitDetail />} />
           <Route path="/franquiciante/candidatos" element={<Candidates />} />
           <Route path="/franquiciante/reportes" element={<Reports />} />
+          <Route path="/franquiciante/calendario" element={<FranchisorCalendar />} />
           <Route path="/franquiciado/inicio" element={<FranchiseeHome />} />
           <Route path="/franquiciado/apertura" element={<Opening />} />
           <Route path="/franquiciado/documentos" element={<Documents />} />
           <Route path="/franquiciado/carga" element={<MonthlyReportPage />} />
           <Route path="/franquiciado/consultas" element={<MessagesPage />} />
+          <Route path="/franquiciado/calendario" element={<FranchiseeCalendar />} />
           <Route path="/equipo/proyectos" element={<Projects />} />
           <Route path="/equipo/proyectos/:id" element={<Board />} />
           <Route path="/equipo/mis-tareas" element={<MyTasks />} />

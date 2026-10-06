@@ -43,7 +43,7 @@ function resolve(dayRef: number | string, hour: number, min: number) {
   return new Date(now.getFullYear(), now.getMonth(), day, hour, min).toISOString();
 }
 
-export const initialEvents: CalendarEvent[] = rows.map((r, i) => ({
+const base: CalendarEvent[] = rows.map((r, i) => ({
   id: `E-${String(i + 1).padStart(2, '0')}`,
   date: resolve(r[0], r[1], r[2]),
   durationMin: r[3],
@@ -53,4 +53,67 @@ export const initialEvents: CalendarEvent[] = rows.map((r, i) => ({
   ...(r[7] ?? {}),
   location: r[8],
   reminder: i % 3 === 0,
+  status: 'confirmado' as const,
+  ...(r[5][0].startsWith('Carga mensual') ? { participants: ['admin', 'franquiciado', 'equipo'] as CalendarEvent['participants'] } : {}),
 }));
+
+/** Actividades compartidas entre MRG, la marca y el franquiciado (calendario de cada rol) */
+const shared: CalendarEvent[] = [
+  {
+    id: 'E-S1',
+    date: resolve('+2', 10, 0),
+    durationMin: 45,
+    type: 'reunion',
+    title: ['Revisión de layout con MRG · Eldorado', 'Layout review with MRG · Eldorado'],
+    ownerId: 'u-rafael',
+    createdBy: 'u-rafael',
+    brandId: 'pampa',
+    projectId: 'pampa-eldorado',
+    participants: ['admin', 'equipo', 'franquiciado'],
+    status: 'propuesto',
+    location: 'Videollamada',
+    note: ['Quiero revisar la ubicación de la caja antes del montaje del mobiliario.', 'I’d like to review the cashier position before the furniture goes in.'],
+  },
+  {
+    id: 'E-S2',
+    date: resolve('+4', 15, 0),
+    durationMin: 30,
+    type: 'llamada',
+    title: ['Comité de expansión · Pampa Burger', 'Expansion committee · Pampa Burger'],
+    ownerId: 'u-lucia',
+    createdBy: 'u-lucia',
+    brandId: 'pampa',
+    participants: ['admin', 'franquiciante'],
+    status: 'propuesto',
+    note: ['Revisar candidatos para Morumbi y la caída de Center Norte.', 'Review candidates for Morumbi and the Center Norte drop.'],
+  },
+  {
+    id: 'E-S3',
+    date: resolve(17, 11, 0),
+    durationMin: 60,
+    type: 'reunion',
+    title: ['Presentación de candidatos a Pampa Burger', 'Candidate presentation to Pampa Burger'],
+    ownerId: 'u-carlos',
+    createdBy: 'u-carlos',
+    brandId: 'pampa',
+    participants: ['admin', 'franquiciante'],
+    status: 'confirmado',
+    location: 'Oficina MRG · Av. Paulista',
+  },
+  {
+    id: 'E-S4',
+    date: resolve(20, 16, 0),
+    durationMin: 90,
+    type: 'visita',
+    title: ['Recorrida de obra con la marca · Eldorado', 'Site walkthrough with the brand · Eldorado'],
+    ownerId: 'u-paula',
+    createdBy: 'u-paula',
+    brandId: 'pampa',
+    projectId: 'pampa-eldorado',
+    participants: ['admin', 'equipo', 'franquiciante', 'franquiciado'],
+    status: 'confirmado',
+    location: 'Shopping Eldorado',
+  },
+];
+
+export const initialEvents: CalendarEvent[] = [...base, ...shared];

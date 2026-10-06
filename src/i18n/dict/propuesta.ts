@@ -59,6 +59,7 @@ const d: Dict = {
   'prop.m3b2': ['Calendario mensual y semanal', 'Monthly and weekly calendar'],
   'prop.m3b3': ['Recordatorios automáticos', 'Automatic reminders'],
   'prop.m3b4': ['Usuarios, roles y permisos', 'Users, roles and permissions'],
+  'prop.m3b5': ['Alta de marcas y franquiciados con aprobación de MRG', 'Brand and franchisee sign-up approved by MRG'],
 
   'prop.m4t': ['Portal franquiciante', 'Franchisor portal'],
   'prop.m4d': ['Cada marca argentina ve cómo le va en Brasil: candidatos, aperturas y facturación.', 'Each Argentine brand sees how it is doing in Brazil: candidates, openings and revenue.'],
@@ -66,6 +67,7 @@ const d: Dict = {
   'prop.m4b2': ['Métricas de prospección', 'Prospecting metrics'],
   'prop.m4b3': ['Unidades y estado de apertura', 'Units and opening status'],
   'prop.m4b4': ['Reportes PDF y CSV', 'PDF and CSV reports'],
+  'prop.m4b5': ['Calendario compartido con MRG', 'Calendar shared with MRG'],
 
   'prop.m5t': ['Portal franquiciado', 'Franchisee portal'],
   'prop.m5d': ['El franquiciado sigue su apertura, encuentra los manuales y carga sus números cada mes.', 'The franchisee follows the opening, finds the manuals and reports numbers every month.'],
@@ -73,6 +75,7 @@ const d: Dict = {
   'prop.m5b2': ['Documentos y manuales', 'Documents and manuals'],
   'prop.m5b3': ['Carga mensual de datos', 'Monthly data reporting'],
   'prop.m5b4': ['Consultas a MRG y a la marca', 'Messages to MRG and the brand'],
+  'prop.m5b5': ['Calendario compartido de actividades', 'Shared activity calendar'],
 
   'prop.m6t': ['Equipo de proyecto', 'Project team'],
   'prop.m6d': ['Legal, shoppings, RRHH y obra trabajando sobre el mismo tablero, con el avance calculado solo.', 'Legal, malls, HR and build-out working on the same board, with progress calculated automatically.'],

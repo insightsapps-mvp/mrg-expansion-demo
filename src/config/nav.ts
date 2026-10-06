@@ -49,6 +49,7 @@ export const NAV: Record<Role, NavItem[]> = {
     { id: 'unidades', path: '/franquiciante/unidades', label: 'nav.unidades', icon: Store, group: 'operacion' },
     { id: 'candidatos', path: '/franquiciante/candidatos', label: 'nav.candidatos', icon: UserSearch, group: 'operacion' },
     { id: 'reportes', path: '/franquiciante/reportes', label: 'nav.reportes', icon: BarChart3, group: 'operacion' },
+    { id: 'calendarioFte', path: '/franquiciante/calendario', label: 'nav.calendario', icon: CalendarDays, group: 'operacion' },
   ],
   franquiciado: [
     propuesta,
@@ -57,6 +58,7 @@ export const NAV: Record<Role, NavItem[]> = {
     { id: 'documentos', path: '/franquiciado/documentos', label: 'nav.documentos', icon: FolderOpen, group: 'operacion' },
     { id: 'carga', path: '/franquiciado/carga', label: 'nav.carga', icon: FileSpreadsheet, group: 'operacion' },
     { id: 'consultas', path: '/franquiciado/consultas', label: 'nav.consultas', icon: MessagesSquare, group: 'operacion' },
+    { id: 'calendarioFdo', path: '/franquiciado/calendario', label: 'nav.calendario', icon: CalendarDays, group: 'operacion' },
   ],
   equipo: [
     propuesta,

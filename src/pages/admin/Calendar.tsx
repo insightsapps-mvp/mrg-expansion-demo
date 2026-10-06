@@ -6,6 +6,7 @@ import { useApp } from '@/store';
 import { tr, useT } from '@/i18n';
 import { cn } from '@/lib/utils';
 import { DevNotice, Modal, PageHeader, PreviewBanner } from '@/components/ui';
+import { PendingProposals } from '@/components/calendar/PendingProposals';
 import CalendarView, { EVENT_COLOR, EVENT_TYPES } from '@/components/calendar/CalendarView';
 import type { CalendarEvent, EventType } from '@/types';
 
@@ -111,6 +112,7 @@ export default function AdminCalendar() {
       />
       <PreviewBanner bullets={[t('cal.b1'), t('cal.b2'), t('cal.b3')]} />
 
+      <PendingProposals />
       <CalendarView events={events} mode="admin" onAdd={onAdd} />
 
       <Modal

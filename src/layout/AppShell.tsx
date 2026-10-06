@@ -16,6 +16,19 @@ import { WelcomeModal } from '@/features/WelcomeModal';
 import { Tour } from '@/features/tour/Tour';
 import { AIAssistant } from '@/features/ai/AIAssistant';
 
+/** Contadores de pendientes en el menú (solicitudes de acceso y actividades propuestas) */
+function useNavBadges(): Record<string, number> {
+  const role = useApp((s) => s.role);
+  const req = useApp((s) => s.requests.filter((r) => r.status === 'pendiente').length);
+  const ev = useApp((s) => s.events.filter((e) => e.status === 'propuesto').length);
+  return role === 'admin' ? { usuarios: req, calendario: ev } : {};
+}
+
+function NavBadge({ n }: { n?: number }) {
+  if (!n) return null;
+  return <span className="num inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-warn px-1 text-[10.5px] font-bold text-white">{n}</span>;
+}
+
 const isActive = (item: NavItem, path: string) =>
   item.id === 'propuesta' ? path === '/propuesta' : path === item.path || path.startsWith(item.path + '/');
 
@@ -26,6 +39,7 @@ function TopBar() {
   const { t } = useT();
   const { goMenu } = useNavActions();
   const items = NAV[role];
+  const badges = useNavBadges();
   // Cuántas pills entran: se mide el ancho real disponible (cambia con rol, idioma y viewport)
   const navRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
@@ -94,6 +108,7 @@ function TopBar() {
                 <Icon size={15} />
                 {t(it.label)}
                 {it.id === 'propuesta' && <span className="h-1.5 w-1.5 rounded-full bg-accent" />}
+                <NavBadge n={badges[it.id]} />
               </button>
             );
           })}
@@ -101,7 +116,7 @@ function TopBar() {
             <DM.Root>
               <DM.Trigger asChild>
                 <button data-tour="nav-more" className={cn('flex min-h-[40px] shrink-0 items-center gap-1 rounded-full px-3 text-[13px] font-medium hover:bg-subtle', overflowLg.some((it) => isActive(it, pathname)) ? 'bg-accent-soft text-accent' : 'text-ink2')}>
-                  {t('nav.more')} <ChevronDown size={14} />
+                  {t('nav.more')} <NavBadge n={overflowLg.reduce((a, it) => a + (badges[it.id] ?? 0), 0)} /> <ChevronDown size={14} />
                 </button>
               </DM.Trigger>
               <DM.Portal>
@@ -116,6 +131,9 @@ function TopBar() {
                       >
                         <Icon size={16} className="text-muted" />
                         {t(it.label)}
+                        <span className="ml-auto">
+                          <NavBadge n={badges[it.id]} />
+                        </span>
                       </DM.Item>
                     );
                   })}
@@ -218,6 +236,7 @@ export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => voi
   const { t } = useT();
   const { goMenu } = useNavActions();
   const items = NAV[role];
+  const badges = useNavBadges();
   const groups: { key: 'comercial' | 'operacion'; label: string }[] = [
     { key: 'comercial', label: t('nav.groupComercial') },
     { key: 'operacion', label: t('nav.groupOperacion') },
@@ -246,6 +265,9 @@ export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => voi
                     >
                       <Icon size={18} className={active ? 'text-accent' : 'text-muted'} />
                       {t(it.label)}
+                      <span className="ml-auto">
+                        <NavBadge n={badges[it.id]} />
+                      </span>
                     </button>
                   );
                 })}

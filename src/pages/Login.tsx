@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { Check, Eye, EyeOff, LogIn, MessageCircle, PlayCircle } from 'lucide-react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { ArrowRight, Check, Eye, EyeOff, LogIn, MessageCircle, PlayCircle, UserPlus } from 'lucide-react';
 import { useApp } from '@/store';
 import { useT } from '@/i18n';
 import { demoAccounts, roleColor, userById } from '@/data/users';
@@ -194,6 +194,17 @@ export default function Login() {
                 </div>
               </div>
             </form>
+
+            <Link to="/registro" className="card mt-4 flex min-h-[56px] items-center gap-3 px-4 py-3 text-left transition hover:border-accent">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                <UserPlus size={17} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold text-ink">{t('login.register')}</span>
+                <span className="block text-xs text-muted">{t('login.registerSub')}</span>
+              </span>
+              <ArrowRight size={16} className="shrink-0 text-accent" />
+            </Link>
 
             <div className="mt-5 flex flex-col items-center gap-1 text-[13px]">
               <a href={WHATSAPP_URL} target="_blank" rel="noopener" className="inline-flex min-h-[44px] items-center gap-2 font-medium text-ink2 hover:text-accent">

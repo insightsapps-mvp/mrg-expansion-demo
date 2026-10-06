@@ -31,6 +31,8 @@ const d: Dict = {
   'login.error': ['Usuario o contraseña incorrectos. Probá con un perfil de demo.', 'Wrong username or password. Try a demo profile.'],
   'login.noAccess': ['¿No tenés acceso? Hablemos por WhatsApp', 'No access? Let’s talk on WhatsApp'],
   'login.trailer': ['Ver demo automática de la plataforma', 'Watch the automatic platform demo'],
+  'login.register': ['¿Sos una marca o un futuro franquiciado?', 'Are you a brand or a future franchisee?'],
+  'login.registerSub': ['Cargá tus datos y solicitá acceso. MRG lo aprueba.', 'Enter your details and request access. MRG approves it.'],
   'login.legal': ['Datos de demostración. Ninguna información es real.', 'Demo data. No information is real.'],
 };
 

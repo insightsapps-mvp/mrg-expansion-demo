@@ -14,13 +14,13 @@ import {
   startOfMonth,
   startOfWeek,
 } from 'date-fns';
-import { Bell, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Clock, MapPin, Plus } from 'lucide-react';
-import { useT } from '@/i18n';
+import { Bell, CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Clock, MapPin, Plus } from 'lucide-react';
+import { tr, useT } from '@/i18n';
 import { useApp } from '@/store';
 import { cn } from '@/lib/utils';
 import { fmtDate } from '@/lib/format';
 import { Avatar, SidePanel, Empty } from '@/components/ui';
-import { userById } from '@/data/users';
+import { roleColor, userById } from '@/data/users';
 import { brands } from '@/data/brands';
 import { projects } from '@/data/projects';
 import type { CalendarEvent, EventType } from '@/types';
@@ -34,10 +34,18 @@ export const EVENT_COLOR: Record<EventType, string> = {
   visita: '#8b5cf6',
 };
 
-export const chipStyle = (type: EventType): CSSProperties => ({
-  background: `color-mix(in srgb, ${EVENT_COLOR[type]} 12%, transparent)`,
-  borderLeft: `3px solid ${EVENT_COLOR[type]}`,
-});
+export const chipStyle = (type: EventType, pending = false): CSSProperties =>
+  pending
+    ? {
+        background: `repeating-linear-gradient(135deg, color-mix(in srgb, ${EVENT_COLOR[type]} 10%, transparent) 0 6px, transparent 6px 10px)`,
+        borderLeft: `3px dashed ${EVENT_COLOR[type]}`,
+      }
+    : {
+        background: `color-mix(in srgb, ${EVENT_COLOR[type]} 12%, transparent)`,
+        borderLeft: `3px solid ${EVENT_COLOR[type]}`,
+      };
+
+export type CalendarMode = 'admin' | 'equipo' | 'franquiciante' | 'franquiciado';
 
 const HOUR_START = 8;
 const HOUR_END = 20;
@@ -50,7 +58,7 @@ export default function CalendarView({
   onAdd,
 }: {
   events: CalendarEvent[];
-  mode: 'admin' | 'equipo';
+  mode: CalendarMode;
   onAdd?: (date?: Date) => void;
 }) {
   const { t, b, e, lang } = useT();
@@ -67,7 +75,7 @@ export default function CalendarView({
   const visible = useMemo(
     () =>
       events
-        .filter((ev) => !hidden.includes(ev.type))
+        .filter((ev) => !hidden.includes(ev.type) && ev.status !== 'rechazado')
         .slice()
         .sort((a, z) => +new Date(a.date) - +new Date(z.date)),
     [events, hidden],
@@ -192,7 +200,7 @@ export default function CalendarView({
                   type="button"
                   onClick={() => setSelectedId(ev.id)}
                   className="flex min-w-0 items-center gap-1 rounded-[6px] px-1.5 py-1 text-left text-[11.5px] leading-tight text-ink transition hover:brightness-95"
-                  style={chipStyle(ev.type)}
+                  style={chipStyle(ev.type, ev.status === 'propuesto')}
                   title={b(ev.title)}
                 >
                   <span className="num shrink-0 text-[10.5px] font-medium text-ink2">{fmtDate(ev.date, 'HH:mm', lang)}</span>
@@ -281,7 +289,7 @@ export default function CalendarView({
                       type="button"
                       onClick={() => setSelectedId(ev.id)}
                       className="absolute inset-x-0.5 overflow-hidden rounded-[6px] px-1.5 py-1 text-left text-[11px] leading-tight text-ink shadow-sm transition hover:brightness-95"
-                      style={{ ...chipStyle(ev.type), top, height }}
+                      style={{ ...chipStyle(ev.type, ev.status === 'propuesto'), top, height }}
                       title={b(ev.title)}
                     >
                       <div className="num text-[10px] font-medium text-ink2">{fmtDate(s, 'HH:mm', lang)}</div>
@@ -392,7 +400,7 @@ export default function CalendarView({
                       type="button"
                       onClick={() => setSelectedId(ev.id)}
                       className={cn('card flex min-h-[56px] w-full items-center gap-3 px-3 py-2.5 text-left', past && 'opacity-70')}
-                      style={{ borderLeft: `3px solid ${EVENT_COLOR[ev.type]}` }}
+                      style={{ borderLeft: `3px ${ev.status === 'propuesto' ? 'dashed' : 'solid'} ${EVENT_COLOR[ev.type]}` }}
                     >
                       <div className="w-12 shrink-0">
                         <div className="num text-[13px] text-ink">{fmtDate(ev.date, 'HH:mm', lang)}</div>
@@ -401,6 +409,7 @@ export default function CalendarView({
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-[14px] font-medium text-ink">{b(ev.title)}</div>
                         <div className="truncate text-[12px] text-muted">
+                          {ev.status === 'propuesto' && <span className="font-semibold text-warn">{t('shcal.pending')} · </span>}
                           {e('eventType', ev.type)}
                           {ev.location ? ` · ${ev.location}` : ''}
                         </div>
@@ -422,6 +431,7 @@ export default function CalendarView({
   const brand = selected?.brandId ? brands.find((x) => x.id === selected.brandId) : undefined;
   const project = selected?.projectId ? projects.find((x) => x.id === selected.projectId) : undefined;
   const owner = selected ? userById(selected.ownerId) : undefined;
+  const creator = selected?.createdBy ? userById(selected.createdBy) : undefined;
 
   return (
     <div className="min-w-0">
@@ -467,7 +477,35 @@ export default function CalendarView({
         onClose={() => setSelectedId(null)}
         title={selected ? b(selected.title) : ''}
         footer={
-          selected && (
+          selected &&
+          (selected.status === 'propuesto' && (mode === 'admin' || mode === 'equipo') ? (
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="btn-primary btn-sm min-h-[44px] flex-1"
+                onClick={() => {
+                  const s = useApp.getState();
+                  s.updateEvent(selected.id, { status: 'confirmado' });
+                  s.toast(tr('shcal.confirmedToast', s.lang, { name: creator?.name ?? '' }));
+                }}
+              >
+                <Check size={15} />
+                {t('shcal.confirm')}
+              </button>
+              <button
+                type="button"
+                className="btn-secondary btn-sm min-h-[44px] flex-1"
+                onClick={() => {
+                  const s = useApp.getState();
+                  s.updateEvent(selected.id, { status: 'rechazado' });
+                  s.toast(tr('shcal.rejectedToast', s.lang), 'warn');
+                  setSelectedId(null);
+                }}
+              >
+                {t('shcal.propose_other')}
+              </button>
+            </div>
+          ) : (
             <div className="flex flex-wrap gap-2">
               {mode === 'admin' && lead && (
                 <Link to={`/admin/crm/${lead.id}`} className="btn-primary btn-sm min-h-[44px] flex-1">
@@ -490,7 +528,7 @@ export default function CalendarView({
                 {t('cal.markDone')}
               </button>
             </div>
-          )
+          ))
         }
       >
         {selected && (
@@ -506,7 +544,35 @@ export default function CalendarView({
                   {t('cal.reminderOn')}
                 </span>
               )}
+              {selected.status === 'propuesto' && <span className="pill bg-warn/10 text-warn">{t('shcal.pendingLong')}</span>}
+              {selected.status === 'confirmado' && selected.participants && <span className="pill bg-ok/10 text-ok">{t('shcal.confirmed')}</span>}
+              {selected.status === 'rechazado' && <span className="pill bg-danger/10 text-danger">{t('shcal.rejected')}</span>}
             </div>
+
+            {(selected.participants || selected.note) && (
+              <div className="rounded-card border border-line p-3">
+                {creator && (
+                  <div className="mb-2 flex items-center gap-2 text-sm">
+                    <Avatar userId={creator.id} size={24} />
+                    <span className="text-muted">{t('shcal.proposedBy')}</span>
+                    <span className="font-semibold text-ink">{creator.name}</span>
+                  </div>
+                )}
+                {selected.note && <p className="mb-2 rounded-ctl bg-subtle px-3 py-2 text-[13px] italic text-ink2">“{b(selected.note)}”</p>}
+                {selected.participants && (
+                  <>
+                    <div className="kpi-label mb-1.5">{t('shcal.participants')}</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selected.participants.map((r) => (
+                        <span key={r} className="pill" style={{ background: `color-mix(in srgb, ${roleColor[r]} 12%, transparent)`, color: roleColor[r] }}>
+                          {e('role', r)}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
             <dl className="space-y-3 text-sm">
               <div className="flex gap-3">

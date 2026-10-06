@@ -4,6 +4,7 @@ import { useApp } from '@/store';
 import { useT } from '@/i18n';
 import { PageHeader, PreviewBanner } from '@/components/ui';
 import CalendarView from '@/components/calendar/CalendarView';
+import { eventsFor } from '@/components/calendar/SharedCalendar';
 import { projects } from '@/data/projects';
 import type { CalendarEvent } from '@/types';
 
@@ -30,7 +31,7 @@ export default function TeamCalendar() {
         brandId: projects.find((p) => p.id === tk.projectId)?.brandId,
         ownerId: tk.assigneeId,
       }));
-    const base = events.filter((ev) => ev.type === 'visita' || ev.type === 'vencimiento');
+    const base = eventsFor('equipo', events);
     return { list: [...base, ...fromTasks], taskCount: fromTasks.length };
   }, [events, tasks]);
 

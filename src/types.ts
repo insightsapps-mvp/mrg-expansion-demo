@@ -112,6 +112,34 @@ export interface CalendarEvent {
   ownerId: string;
   location?: string;
   reminder?: boolean;
+  /** Calendario compartido: quién ve la actividad, quién la propuso y si MRG la confirmó */
+  participants?: Role[];
+  createdBy?: string;
+  status?: 'confirmado' | 'propuesto' | 'rechazado';
+  note?: Bi;
+}
+
+export type AccessKind = 'franquiciante' | 'franquiciado';
+export interface AccessRequest {
+  id: string;
+  kind: AccessKind;
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  daysAgo: number;
+  status: 'pendiente' | 'aprobada' | 'rechazada';
+  // marca franquiciante
+  company?: string;
+  sector?: Sector;
+  origin?: string;
+  units?: number;
+  // franquiciado / candidato
+  brandId?: string;
+  capital?: number;
+  experience?: ExperienceLevel;
+  location?: LocationLevel;
+  message?: string;
 }
 
 export type ProjectStatus = 'tiempo' | 'riesgo' | 'atrasado';

@@ -22,6 +22,8 @@ import { initialEvents } from '@/data/events';
 import { initialTasks } from '@/data/projects';
 import { initialChecklist, initialMessages, reportHistory } from '@/data/franchisee';
 import { DEFAULT_RULES } from '@/config/scoring';
+import { initialRequests } from '@/data/requests';
+import type { AccessRequest } from '@/types';
 
 const ss = {
   get: (k: string) => {
@@ -104,6 +106,7 @@ export interface AppState {
   messages: Message[];
   reports: MonthlyReport[];
   rules: ScoreRule[];
+  requests: AccessRequest[];
 
   login: (role: Role) => void;
   logout: () => void;
@@ -126,6 +129,9 @@ export interface AppState {
   touchLead: (id: string) => void;
   upsertProposal: (p: Proposal) => void;
   addEvent: (e: CalendarEvent) => void;
+  updateEvent: (id: string, patch: Partial<CalendarEvent>) => void;
+  addRequest: (r: AccessRequest) => void;
+  setRequestStatus: (id: string, status: AccessRequest['status']) => void;
   moveTask: (id: string, status: TaskStatus) => void;
   addTaskComment: (taskId: string, authorId: string, text: string) => void;
   toggleChecklist: (stageId: string, itemId: string) => void;
@@ -157,6 +163,7 @@ export const useApp = create<AppState>((set, get) => ({
   messages: initialMessages,
   reports: reportHistory,
   rules: DEFAULT_RULES,
+  requests: initialRequests,
 
   login: (role) => {
     ss.set('mrg_session', JSON.stringify({ role }));
@@ -235,6 +242,38 @@ export const useApp = create<AppState>((set, get) => ({
         : [p, ...s.proposals],
     })),
   addEvent: (e) => set((s) => ({ events: [...s.events, e] })),
+  updateEvent: (id, patch) => set((s) => ({ events: s.events.map((e) => (e.id === id ? { ...e, ...patch } : e)) })),
+  addRequest: (r) => set((s) => ({ requests: [r, ...s.requests] })),
+  setRequestStatus: (id, status) =>
+    set((s) => {
+      const req = s.requests.find((r) => r.id === id);
+      const requests = s.requests.map((r) => (r.id === id ? { ...r, status } : r));
+      // Un franquiciado aprobado entra al CRM como lead nuevo con score calculado
+      if (req && status === 'aprobada' && req.kind === 'franquiciado' && !s.leads.some((l) => l.email === req.email)) {
+        const lead: Lead = {
+          id: `L-${String(s.leads.length + 1).padStart(3, '0')}`,
+          name: req.name,
+          email: req.email,
+          phone: req.phone,
+          city: req.city,
+          nationality: 'BR',
+          origin: 'web',
+          brandId: req.brandId ?? 'pampa',
+          sector: req.sector ?? 'hamburgueseria',
+          capital: req.capital ?? 0,
+          experience: req.experience ?? 'none',
+          experienceYears: 0,
+          location: req.location ?? 'spcap',
+          desiredZone: 'Shopping Eldorado',
+          stage: 'nuevo',
+          ownerId: 'u-daniel',
+          lastContactDays: 0,
+          createdDaysAgo: 0,
+        };
+        return { requests, leads: [lead, ...s.leads] };
+      }
+      return { requests };
+    }),
   moveTask: (id, status) => set((s) => ({ tasks: s.tasks.map((t) => (t.id === id ? { ...t, status } : t)) })),
   addTaskComment: (taskId, authorId, text) =>
     set((s) => ({

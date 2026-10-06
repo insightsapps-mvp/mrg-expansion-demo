@@ -43,9 +43,9 @@ const MODS: Mod[] = [
   { n: 0, key: 'm0', icon: Wrench, bullets: 3 },
   { n: 1, key: 'm1', icon: KanbanSquare, bullets: 4, view: '/admin/crm', role: 'admin' },
   { n: 2, key: 'm2', icon: Sparkles, bullets: 4, view: '/admin/propuestas/nueva?lead=L-001', role: 'admin' },
-  { n: 3, key: 'm3', icon: LayoutDashboard, bullets: 4, view: '/admin/panel', role: 'admin' },
-  { n: 4, key: 'm4', icon: Store, bullets: 4, view: '/franquiciante/panel', role: 'franquiciante' },
-  { n: 5, key: 'm5', icon: ClipboardCheck, bullets: 4, view: '/franquiciado/apertura', role: 'franquiciado' },
+  { n: 3, key: 'm3', icon: LayoutDashboard, bullets: 5, view: '/admin/panel', role: 'admin' },
+  { n: 4, key: 'm4', icon: Store, bullets: 5, view: '/franquiciante/panel', role: 'franquiciante' },
+  { n: 5, key: 'm5', icon: ClipboardCheck, bullets: 5, view: '/franquiciado/apertura', role: 'franquiciado' },
   { n: 6, key: 'm6', icon: FolderKanban, bullets: 4, view: '/equipo/proyectos/pampa-eldorado', role: 'equipo' },
 ];
 
