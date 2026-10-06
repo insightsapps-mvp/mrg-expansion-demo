@@ -199,6 +199,14 @@ body {
 .panel-in {
   animation: panelIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
+@keyframes trailerbar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
 @keyframes stagger {
   from {
     opacity: 0;

@@ -3,3 +3,6 @@ dist
 *.tsbuildinfo
 .DS_Store
 public/brand/*-orig.*
+.claude/
+docs/
+

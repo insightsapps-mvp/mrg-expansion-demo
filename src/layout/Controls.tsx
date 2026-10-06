@@ -61,9 +61,9 @@ export function TourButton({ compact }: { compact?: boolean }) {
 export function WhatsAppButton({ className, label }: { className?: string; label?: string }) {
   const { t } = useT();
   return (
-    <a href={WHATSAPP_URL} target="_blank" rel="noopener" data-tour="whatsapp-cta" className={cn('btn-primary', className)}>
+    <a href={WHATSAPP_URL} target="_blank" rel="noopener" data-tour="whatsapp-cta" className={cn('btn-primary', className)} aria-label={label ?? t('top.cta')}>
       <MessageCircle size={16} />
-      {label ?? t('top.cta')}
+      <span className="hidden xl:inline">{label ?? t('top.cta')}</span>
     </a>
   );
 }

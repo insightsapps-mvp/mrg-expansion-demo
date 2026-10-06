@@ -26,9 +26,32 @@ function TopBar() {
   const { t } = useT();
   const { goMenu } = useNavActions();
   const items = NAV[role];
-  // visibles por breakpoint: lg → 4 · xl → 6 · 2xl → todos
-  const vis = (i: number) => (i < 4 ? 'flex' : i < 6 ? 'hidden xl:flex' : 'hidden 2xl:flex');
-  const overflowLg = items.slice(4);
+  // Cuántas pills entran: se mide el ancho real disponible (cambia con rol, idioma y viewport)
+  const navRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
+  const [count, setCount] = useState(items.length);
+  useEffect(() => {
+    const calc = () => {
+      const nav = navRef.current;
+      const m = measureRef.current;
+      if (!nav || !m) return;
+      const widths = Array.from(m.children).map((c) => (c as HTMLElement).offsetWidth + 4);
+      const avail = nav.clientWidth;
+      const total = widths.reduce((a, b) => a + b, 0);
+      if (total <= avail) return setCount(items.length);
+      let used = 84; // botón "Más"
+      let n = 0;
+      while (n < widths.length && used + widths[n] <= avail) used += widths[n++];
+      setCount(Math.max(1, n));
+    };
+    calc();
+    const ro = new ResizeObserver(calc);
+    if (navRef.current) ro.observe(navRef.current);
+    document.fonts?.ready.then(calc);
+    return () => ro.disconnect();
+  }, [items, t]);
+  const vis = (i: number) => (i < count ? 'flex' : 'hidden');
+  const overflowLg = items.slice(count);
   return (
     <header data-tour="top-nav" className="sticky top-0 z-50 hidden h-16 border-b border-line bg-[color-mix(in_srgb,var(--bg)_86%,transparent)] backdrop-blur-md lg:block">
       <div className="mx-auto flex h-full max-w-[1600px] items-center gap-3 px-5">
@@ -36,10 +59,23 @@ function TopBar() {
           <LogoFull className="h-[30px]" />
         </button>
         <span className="h-6 w-px shrink-0 bg-line" />
-        <span className="hidden shrink-0 text-[10.5px] font-bold uppercase tracking-[0.14em] xl:block" style={{ color: roleColor[role] }}>
+        <span className="hidden shrink-0 text-[10.5px] font-bold uppercase tracking-[0.14em] 2xl:block" style={{ color: roleColor[role] }}>
           {t('kicker.' + role).split(' · ')[0]}
         </span>
-        <nav className="mx-auto flex min-w-0 items-center gap-1">
+        <div ref={navRef} className="relative flex min-w-0 flex-1 justify-center">
+        <div ref={measureRef} aria-hidden className="pointer-events-none invisible absolute left-0 top-0 flex gap-1">
+          {items.map((it) => {
+            const Icon = it.icon;
+            return (
+              <span key={it.id} className="inline-flex min-h-[40px] shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-[13px] font-medium">
+                <Icon size={15} />
+                {t(it.label)}
+                {it.id === 'propuesta' && <span className="h-1.5 w-1.5" />}
+              </span>
+            );
+          })}
+        </div>
+        <nav className="flex min-w-0 items-center gap-1">
           {items.map((it, i) => {
             const active = isActive(it, pathname);
             const Icon = it.icon;
@@ -64,19 +100,19 @@ function TopBar() {
           {overflowLg.length > 0 && (
             <DM.Root>
               <DM.Trigger asChild>
-                <button data-tour="nav-more" className={cn('min-h-[40px] items-center gap-1 rounded-full px-3 text-[13px] font-medium text-ink2 hover:bg-subtle', items.length > 6 ? 'flex 2xl:hidden' : 'flex xl:hidden')}>
+                <button data-tour="nav-more" className={cn('flex min-h-[40px] shrink-0 items-center gap-1 rounded-full px-3 text-[13px] font-medium hover:bg-subtle', overflowLg.some((it) => isActive(it, pathname)) ? 'bg-accent-soft text-accent' : 'text-ink2')}>
                   {t('nav.more')} <ChevronDown size={14} />
                 </button>
               </DM.Trigger>
               <DM.Portal>
                 <DM.Content sideOffset={8} className="z-[90] w-56 rounded-card border border-line bg-card p-1.5 shadow-md">
-                  {overflowLg.map((it, j) => {
+                  {overflowLg.map((it) => {
                     const Icon = it.icon;
                     return (
                       <DM.Item
                         key={it.id}
                         onSelect={() => goMenu(it.path)}
-                        className={cn('min-h-[44px] cursor-pointer items-center gap-2 rounded-[10px] px-2.5 text-sm text-ink outline-none hover:bg-subtle focus:bg-subtle', j + 4 < 6 ? 'flex xl:hidden' : 'flex')}
+                        className="flex min-h-[44px] cursor-pointer items-center gap-2 rounded-[10px] px-2.5 text-sm text-ink outline-none hover:bg-subtle focus:bg-subtle"
                       >
                         <Icon size={16} className="text-muted" />
                         {t(it.label)}
@@ -88,12 +124,13 @@ function TopBar() {
             </DM.Root>
           )}
         </nav>
+        </div>
         <div className="flex shrink-0 items-center gap-1">
           <TourButton />
           <LangToggle />
           <ThemeToggle />
           <RoleSwitcherDropdown />
-          <WhatsAppButton className="ml-1 hidden px-4 xl:inline-flex" />
+          <WhatsAppButton className="ml-1 w-11 px-0 xl:w-auto xl:px-4" />
           <UserMenu />
         </div>
       </div>
